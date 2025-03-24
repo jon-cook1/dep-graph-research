@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Set up frontend (React)
+echo "Setting up frontend..."
+(cd client && npm install)
+
+# Set up backend (Python)
+echo "Setting up backend..."
+(cd server && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt)
+
+echo "Initialization complete."
