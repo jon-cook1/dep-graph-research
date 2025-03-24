@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Start Python backend
+(cd server && python3 api.py) &
+
+# Start React frontend
+(cd client && npm start) &
+
+# Wait for both processes
+wait
