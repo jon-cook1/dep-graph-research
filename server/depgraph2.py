@@ -233,15 +233,19 @@ def generate_order(nodes: List[Dict], edges: List[Dict]) -> List[List[str]]:
         queue = deque(start_nodes)
         queued_nodes = list(start_nodes)
         while queue:
+            queue.sort(key=lambda x: x["id"]["e"])
+            for i in queue:
+                if i["id"][0] == "e":
+                    print(i["id"])
+                else:
+                    print(i["data"]["label"], i["id"])
+            print()
             # add while queue.popleft() in edges. Run through edges (have to append to next_nodes) before considering next node
             # also need to add set alongside queue to allow for indexing- nodes are being counted twice from 2 diff paths (insta target)
             node = queue.popleft()
-            while queue and node["id"][0] == "e": # guarantees edge
-                edge = node
-                order.append([edge["id"], color])
-                node = queue.popleft()
-            if not queue:
-                break
+            if node["id"][0] == "e":
+                order.append([node["id"], color])
+                continue
 
             if node["id"] in input_node_ids:
                 continue
