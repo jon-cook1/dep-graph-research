@@ -1,0 +1,10 @@
+{
+    "programs": {
+        "Basic Assignments": "z = x + y\na = b",
+        "Chained Dependencies": "m = n\no = m + p\nq = o * r",
+        "Function Usage": "result = process(input_data) + offset",
+        "Conditional Logic": "if flag:\n    output = true_value\nelse:\n    output = default_value",
+        "Complex Math": "final = (a * b) + (c / d) - math.sqrt(e) + f",
+        "Original": "side_len = float(input(\"Enter length of side of garden (feet): \"))\nplant_spacing = float(input(\"Enter spacing between plants (feet): \"))\nsoil_depth = float(input(\"Enter depth of garden soil (feet): \"))\nfill_depth = float(input(\"Enter depth of fill (feet): \"))\n\npi = 3.14\ncircle_area = pi * (side_len/4)**2\ncircle_plants = int(circle_area / plant_spacing ** 2)\nsemi_plants = int(circle_area / 2 / plant_spacing ** 2)\ntotal_plants = circle_plants + semi_plants * 4\nprint()\nprint(\"Plants for each semicircle garden:\", semi_plants)\nprint(\"Plants for the circle garden:\", circle_plants)\nprint(\"Total plants for garden:\", total_plants)\n\nfill_area = side_len**2 - circle_area * 3\ntotal_fill = fill_area/9 * fill_depth/3\nprint(\"Total fill for the garden:\", round(total_fill, 1), \"cubic yards\")\n\ncircle_soil = circle_area/9 * soil_depth/3\ntotal_soil = circle_soil * 3\nprint(\"Soil for each semicircle garden:\", round(circle_soil/2, 1), \"cubic yards\")\nprint(\"Soil for the circle garden:\", round(circle_soil, 1), \"cubic yards\")\nprint(\"Total soil for the garden:\", round(total_soil, 1), \"cubic yards\")"
+    }
+}
