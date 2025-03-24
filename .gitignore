@@ -3,6 +3,7 @@ node_modules/
 
 # Server
 __pycache__/
+venv/
 
 # Misc
 .DS_Store
