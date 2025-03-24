@@ -1,0 +1,8 @@
+# Client
+node_modules/
+
+# Server
+__pycache__/
+
+# Misc
+.DS_Store
