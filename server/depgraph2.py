@@ -230,46 +230,75 @@ def generate_order(nodes: List[Dict], edges: List[Dict]) -> List[List[str]]:
                 order.append([edge["id"], "#000000"])
 
     def trace(start_nodes, color):
-        queue = deque(start_nodes)
-        queued_nodes = list(start_nodes)
-        while queue:
-            queue.sort(key=lambda x: x["id"]["e"])
-            for i in queue:
-                if i["id"][0] == "e":
-                    print(i["id"])
+        cur_node_ids = set()    # avoid false target discovery if two nodes of same color share ancestor
+       
+        while start_nodes:
+            start_nodes.sort(key=lambda x: x["position"]["x"])
+            next_edges = []
+            for node in start_nodes:
+                if color != "#FF0000" and node["id"] in seen:
+                    print("**************")
+                    target_found(node)
                 else:
-                    print(i["data"]["label"], i["id"])
-            print()
-            # add while queue.popleft() in edges. Run through edges (have to append to next_nodes) before considering next node
-            # also need to add set alongside queue to allow for indexing- nodes are being counted twice from 2 diff paths (insta target)
-            node = queue.popleft()
-            if node["id"][0] == "e":
-                order.append([node["id"], color])
-                continue
+                    order.append([node["id"], color])
+                    seen.add(node["id"])
+                    for edge in edges:
+                        if edge["target"] == node["id"] and edge["id"] not in blocked_edge_ids:
+                            next_edges.append(edge)
 
-            if node["id"] in input_node_ids:
-                continue
-            if color != "#FF0000" and node["id"] in seen: #avoid infinite loop with target recursion
-                target_found(node)
-            else:
-                seen.add(node["id"])
-                order.append([node["id"], color])
+            next_nodes = []
+            for edge in next_edges:
+                order.append([edge["id"], color])
+                for node in nodes:
+                    if node["id"] == edge["source"] and node["id"] not in input_node_ids:
+                        if node["id"] not in cur_node_ids:
+                            next_nodes.append(node)
+                            cur_node_ids.add(node["id"])
+            start_nodes = next_nodes
 
-                next_nodes = []
-                next_edges = []
-                for edge in edges:
-                    if edge["target"] == node["id"] and edge["id"] not in blocked_edge_ids:
-                        next_edges.append(edge)
+                    
 
-                        for new_node in nodes:  # could be optimized by refactoring nodes list into id: property dicts
-                            if new_node["id"] == edge["source"]:
-                                if new_node not in queued_nodes:    # don't double visit nodes that have 2 children in same color
-                                    next_nodes.append(new_node)
-                                    queued_nodes.append(new_node)
 
-                next_nodes.sort(key=lambda x: x["position"]["x"])
-                queue.extend(next_edges)
-                queue.extend(next_nodes)
+        # queue = deque(start_nodes)
+        # queued_nodes = list(start_nodes)
+        # while queue:
+        #     queue.sort(key=lambda x: x["id"]["e"])
+        #     for i in queue:
+        #         if i["id"][0] == "e":
+        #             print(i["id"])
+        #         else:
+        #             print(i["data"]["label"], i["id"])
+        #     print()
+        #     # add while queue.popleft() in edges. Run through edges (have to append to next_nodes) before considering next node
+        #     # also need to add set alongside queue to allow for indexing- nodes are being counted twice from 2 diff paths (insta target)
+        #     node = queue.popleft()
+        #     if node["id"][0] == "e":
+        #         order.append([node["id"], color])
+        #         continue
+
+        #     if node["id"] in input_node_ids:
+        #         continue
+        #     if color != "#FF0000" and node["id"] in seen: #avoid infinite loop with target recursion
+        #         target_found(node)
+        #     else:
+        #         seen.add(node["id"])
+        #         order.append([node["id"], color])
+
+        #         next_nodes = []
+        #         next_edges = []
+        #         for edge in edges:
+        #             if edge["target"] == node["id"] and edge["id"] not in blocked_edge_ids:
+        #                 next_edges.append(edge)
+
+        #                 for new_node in nodes:  # could be optimized by refactoring nodes list into id: property dicts
+        #                     if new_node["id"] == edge["source"]:
+        #                         if new_node not in queued_nodes:    # don't double visit nodes that have 2 children in same color
+        #                             next_nodes.append(new_node)
+        #                             queued_nodes.append(new_node)
+
+        #         next_nodes.sort(key=lambda x: x["position"]["x"])
+        #         queue.extend(next_edges)
+        #         queue.extend(next_nodes)
 
     
     if len(output_nodes) > len(color_palette):
