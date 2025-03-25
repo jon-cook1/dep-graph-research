@@ -196,6 +196,9 @@ def generate_edges(sterilized: Dict[str, List[str]], variable_to_node_id: Dict[s
     return edges
 
 def unique_color(color_palette):
+    """
+    If outputs exceed hardcoded 5 colors, generate as unique as possible using euclidean distance
+    """
     def hex_to_rgb(h): return tuple(int(h[i:i+2], 16) for i in (1, 3, 5))
     def color_dist(c1, c2): return sum((a - b) ** 2 for a, b in zip(c1, c2)) ** 0.5
 
@@ -206,12 +209,15 @@ def unique_color(color_palette):
             return new_color
 
 def generate_order(nodes: List[Dict], edges: List[Dict]) -> List[List[str]]:
+    """
+    Generate an ordered 2d list of [element (node or edge), color] to be colored
+    """
     color_palette = ["#0000FF", "#FFFF00", "#00FF00", "#FFA500", "#800080"]
     
     output_nodes = []
     input_node_ids = set()
     seen = set()
-    blocked_edge_ids = set()
+    blocked_edge_ids = set()    # Stop when a black edge is reached, don't recolor target
     order = []
 
     for node in nodes:
@@ -220,7 +226,7 @@ def generate_order(nodes: List[Dict], edges: List[Dict]) -> List[List[str]]:
         elif node["mytype"] == "custominput":
             input_node_ids.add(node["id"])
 
-    output_nodes.sort(key=lambda x: x["position"]["x"]) #force consistent left to right animation
+    output_nodes.sort(key=lambda x: x["position"]["x"]) #force start left to right 
 
     def target_found(node):
         trace([node], "#FF0000")
@@ -233,78 +239,55 @@ def generate_order(nodes: List[Dict], edges: List[Dict]) -> List[List[str]]:
         cur_node_ids = set()    # avoid false target discovery if two nodes of same color share ancestor
        
         while start_nodes:
-            start_nodes.sort(key=lambda x: x["position"]["x"])
             next_edges = []
             for node in start_nodes:
-                if color != "#FF0000" and node["id"] in seen:
-                    print("**************")
+                if color != "#FF0000" and node["id"] in seen:   # Avoid infinite recursion with target discovery
                     target_found(node)
-                else:
+
+                else: # Color node and form list of edges connecting to it
                     order.append([node["id"], color])
                     seen.add(node["id"])
+                        # Use a list of lists for edge groups that share target. Allows sorting of these edges left to right
+                    edge_group = []
                     for edge in edges:
                         if edge["target"] == node["id"] and edge["id"] not in blocked_edge_ids:
-                            next_edges.append(edge)
-
+                            edge_group.append(edge)
+                    next_edges.append(edge_group)
+        
+            # Generate next layer of nodes
             next_nodes = []
-            for edge in next_edges:
-                order.append([edge["id"], color])
-                for node in nodes:
-                    if node["id"] == edge["source"] and node["id"] not in input_node_ids:
-                        if node["id"] not in cur_node_ids:
-                            next_nodes.append(node)
-                            cur_node_ids.add(node["id"])
-            start_nodes = next_nodes
+            for edge_group in next_edges:   
+                for edge in edge_group:
+                    for node in nodes:
+                        if node["id"] == edge["source"]: # Leave input nodes in for sorting edge order logic
+                            if node["id"] not in cur_node_ids:
+                                next_nodes.append(node)
+                                cur_node_ids.add(node["id"])
+            
+            next_nodes.sort(key=lambda x: x["position"]["x"])
+            
+            # Color edges before processing next layer of nodes
+            for edge_group in next_edges:
+                if len(edge_group) == 1:    # Node sourced by one edge
+                    order.append([edge_group[0]["id"], color])
+                else:   # Node sourced by multiple edges, sort to color left to right consistently
+                    for node in next_nodes: # already sorted by x position, use to determine edge color order
+                        for edge in edge_group:
+                            if edge["source"] == node["id"]:
+                                order.append([edge["id"], color])
+                                
+            new_start = []
+            for node in next_nodes:
+                if node["id"] not in input_node_ids:    # Remove input nodes from coloring logic
+                    new_start.append(node)
+            start_nodes = new_start
 
-                    
-
-
-        # queue = deque(start_nodes)
-        # queued_nodes = list(start_nodes)
-        # while queue:
-        #     queue.sort(key=lambda x: x["id"]["e"])
-        #     for i in queue:
-        #         if i["id"][0] == "e":
-        #             print(i["id"])
-        #         else:
-        #             print(i["data"]["label"], i["id"])
-        #     print()
-        #     # add while queue.popleft() in edges. Run through edges (have to append to next_nodes) before considering next node
-        #     # also need to add set alongside queue to allow for indexing- nodes are being counted twice from 2 diff paths (insta target)
-        #     node = queue.popleft()
-        #     if node["id"][0] == "e":
-        #         order.append([node["id"], color])
-        #         continue
-
-        #     if node["id"] in input_node_ids:
-        #         continue
-        #     if color != "#FF0000" and node["id"] in seen: #avoid infinite loop with target recursion
-        #         target_found(node)
-        #     else:
-        #         seen.add(node["id"])
-        #         order.append([node["id"], color])
-
-        #         next_nodes = []
-        #         next_edges = []
-        #         for edge in edges:
-        #             if edge["target"] == node["id"] and edge["id"] not in blocked_edge_ids:
-        #                 next_edges.append(edge)
-
-        #                 for new_node in nodes:  # could be optimized by refactoring nodes list into id: property dicts
-        #                     if new_node["id"] == edge["source"]:
-        #                         if new_node not in queued_nodes:    # don't double visit nodes that have 2 children in same color
-        #                             next_nodes.append(new_node)
-        #                             queued_nodes.append(new_node)
-
-        #         next_nodes.sort(key=lambda x: x["position"]["x"])
-        #         queue.extend(next_edges)
-        #         queue.extend(next_nodes)
-
-    
+    # Ensure enough unique colors exist
     if len(output_nodes) > len(color_palette):
         for i in range(len(output_nodes - len(color_palette))):
             color_palette.append(unique_color(color_palette))
 
+    # Reverse BFS from each output node
     for node, color in zip(output_nodes, color_palette):
         trace([node], color)
     return order

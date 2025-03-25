@@ -17,4 +17,4 @@ Run this only the first time you set up the repository:
 ### Start Application
 Use this command to start the app each time after setup:
 
-```./run```
+```./r```
