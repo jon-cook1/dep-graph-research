@@ -1,7 +1,16 @@
 import React from 'react';
 import '../ButtonPanel.css';
+import { FaPlay, FaPause } from 'react-icons/fa';
 
-const ButtonPanel = ({ onProcessCode, onRerunAnimation, codeProcessed }) => {
+const ButtonPanel = ({ 
+  onProcessCode, 
+  onPlayPauseAnimation, 
+  onSliderChange, 
+  codeProcessed, 
+  currentStep,
+  totalSteps,
+  isPlaying 
+}) => {
   return (
     <div className="button-panel">
       <div className="title">
@@ -14,9 +23,29 @@ const ButtonPanel = ({ onProcessCode, onRerunAnimation, codeProcessed }) => {
         </button>
         
         {codeProcessed && (
-          <button className="rerun-button" onClick={onRerunAnimation}>
-            Rerun Animation
-          </button>
+          <div className="animation-controls">
+            <button 
+              className={`play-pause-button ${isPlaying ? 'playing' : ''}`} 
+              onClick={onPlayPauseAnimation}
+              aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
+            >
+              {isPlaying ? <FaPause /> : <FaPlay />}
+            </button>
+            
+            <input
+              type="range"
+              min="0"
+              max={totalSteps}
+              value={currentStep}
+              onChange={(e) => onSliderChange(parseInt(e.target.value, 10))}
+              className="animation-slider"
+              disabled={totalSteps === 0}
+            />
+            
+            <span className="step-counter">
+              {currentStep}/{totalSteps}
+            </span>
+          </div>
         )}
       </div>
     </div>
