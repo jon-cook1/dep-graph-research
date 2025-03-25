@@ -11,12 +11,12 @@ _Senior research web app for statically analyzing introductory students' Python 
 
 ```cd dep-graph-research```
 
-## Initial Setup
-Run this only the first time you set up the repository:
-
-```./init```
-
 ### Start Application
-Use this command to start the app each time after setup:
+Use this command to start the app:
 
 ```./run```
+
+### Troubleshooting
+If the packages are missing or the app wont start, add a ```-f``` flag:
+
+```./run -f```
