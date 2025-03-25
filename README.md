@@ -9,7 +9,7 @@ _Senior research web app for statically analyzing introductory students' Python 
 ### Clone Repository
 ```git clone https://github.com/jon-cook1/dep-graph-research```
 
-```cd dep-graph-researchdep-graph-research```
+```cd dep-graph-research```
 
 ## Initial Setup
 Run this only the first time you set up the repository:
@@ -19,4 +19,4 @@ Run this only the first time you set up the repository:
 ### Start Application
 Use this command to start the app each time after setup:
 
-```./r```
+```./run```
