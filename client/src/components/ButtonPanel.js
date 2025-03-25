@@ -1,46 +1,24 @@
 import React from 'react';
 import '../ButtonPanel.css';
 
-const ButtonPanel = ({ onProcessCode, onTabChange, activeTab, onRerunAnimation, onToggleNoColor, codeProcessed }) => {
+const ButtonPanel = ({ onProcessCode, onRerunAnimation, codeProcessed }) => {
   return (
     <div className="button-panel">
-      <div className="tab-buttons">
-        <button
-          className={`tab-button ${activeTab === 'Original' ? 'active' : ''}`}
-          onClick={() => onTabChange('Original')}
-        >
-          Original
+      <div className="title">
+        <h2>Dependency Graph Analyzer</h2>
+      </div>
+
+      <div className="controls">
+        <button className="process-button" onClick={onProcessCode}>
+          Process Code
         </button>
+        
         {codeProcessed && (
-          <button
-            className={`tab-button ${activeTab === 'Decomposed' ? 'active' : ''}`}
-            onClick={() => onTabChange('Decomposed')}
-          >
-            Decomposed
+          <button className="rerun-button" onClick={onRerunAnimation}>
+            Rerun Animation
           </button>
         )}
       </div>
-
-      {codeProcessed && (
-        <div className="no-color-toggle">
-          <label htmlFor="noColorSlider">Disable Line Color</label>
-          <input
-            type="checkbox"
-            id="noColorSlider"
-            onChange={onToggleNoColor}
-          />
-        </div>
-      )}
-
-      <button className="process-button" onClick={onProcessCode}>
-        Process Code
-      </button>
-      
-      {codeProcessed && (
-        <button className="rerun-button" onClick={onRerunAnimation}>
-          Rerun Animation
-        </button>
-      )}
     </div>
   );
 };

@@ -3,129 +3,55 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  width: 98%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #2c3e50;
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
-  position: relative;
 }
 
-/* Left-aligned tab buttons */
-.tab-buttons {
+.title h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.controls {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
-/* Styling for tab buttons */
-.tab-button {
-  padding: 10px 15px;
-  background-color: #ccc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.tab-button.active {
-  background-color: #007bff;
-  color: white;
-}
-
-.tab-button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-/* Center-aligned Process Code button */
 .process-button {
-  padding: 10px 3%;
-  background-color: #007bff;
+  padding: 8px 18px;
+  background-color: #3498db;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 18px;
-  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  flex-shrink: 0;
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
 
 .process-button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  transform: translate(-50%, -2px);
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Right-aligned Rerun Animation button */
 .rerun-button {
-  padding: 10px 20px;
-  background-color: #28a745;
+  padding: 8px 18px;
+  background-color: #2ecc71;
   color: white;
   border: none;
-  border-radius: 5px;
-  font-weight: bold;
+  border-radius: 4px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
-  flex-shrink: 0;
+  font-size: 15px;
+  transition: all 0.2s ease;
 }
 
 .rerun-button:hover {
-  background-color: #218838;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #27ae60;
   transform: translateY(-2px);
-}
-
-/* No Color Toggle styling */
-.no-color-toggle {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-weight: bold;
-  color: #555;
-  position: absolute;
-  left: 25%; /* Center halfway between tab buttons and process button */
-  transform: translateX(-25%);
-}
-
-.no-color-toggle label {
-  font-size: 16px;
-}
-
-.no-color-toggle input[type="checkbox"] {
-  appearance: none;
-  width: 50px;
-  height: 24px;
-  background-color: #ccc;
-  border-radius: 12px;
-  position: relative;
-  outline: none;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.no-color-toggle input[type="checkbox"]:checked {
-  background-color: #007bff;
-}
-
-.no-color-toggle input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background-color: white;
-  border-radius: 50%;
-  transition: transform 0.3s;
-}
-
-.no-color-toggle input[type="checkbox"]:checked::before {
-  transform: translateX(26px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

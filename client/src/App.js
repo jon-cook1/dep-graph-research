@@ -4,16 +4,10 @@ import ButtonPanel from './components/ButtonPanel';
 import CodeEditor from './components/CodeEditor';
 import GraphDisplay from './components/GraphDisplay';
 import { ReactFlowProvider } from 'reactflow';
-//import { initialNodes, initialEdges, order } from './graphElements';
 import initialCode from './initialCode.json';
 
 function App() {
-  const [buffers, setBuffers] = useState({
-    Original: initialCode.Original,
-    Decomposed: '',
-  });
-  const [activeTab, setActiveTab] = useState('Original');
-  const [noColor, setNoColor] = useState(false);
+  const [code, setCode] = useState(initialCode.Original);
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
   const [order, setOrder] = useState([]);
@@ -22,21 +16,17 @@ function App() {
   const graphRef = useRef(null);
 
   useEffect(() => {
-    const savedOriginal = localStorage.getItem('Original');
-    setBuffers((prevBuffers) => ({
-      ...prevBuffers,
-      Original: savedOriginal || initialCode.Original,
-      Decomposed: '',
-    }));
+    const savedCode = localStorage.getItem('code');
+    if (savedCode) {
+      setCode(savedCode);
+    }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('Original', buffers.Original);
-  }, [buffers.Original]);
+    localStorage.setItem('code', code);
+  }, [code]);
 
-  // Updated handleProcessCode to call the backend
   const handleProcessCode = async () => {
-    const code = buffers.Original;
     try {
       const response = await fetch('http://localhost:5001/analyze', {
         method: 'POST',
@@ -53,15 +43,9 @@ function App() {
       }
       
       const result = await response.json();
-      // Update state with the nodes and edges received from the backend
       setNodes(result.nodes);
-      setEdges(result.edges);
+      setEdges(result.edges || []);
       setOrder(result.order);
-      // Optionally update the decomposed code if desired.
-      setBuffers((prevBuffers) => ({
-        ...prevBuffers,
-        Decomposed: '', // You may choose to display additional information here
-      }));
       setCodeProcessed(true);
     } catch (error) {
       console.error('Error processing code:', error);
@@ -74,31 +58,19 @@ function App() {
     }
   };
 
-  const handleToggleNoColor = () => {
-    setNoColor((prevNoColor) => !prevNoColor);
-  };
-
   return (
     <div className="app-container">
       <ButtonPanel
         onProcessCode={handleProcessCode}
-        onTabChange={setActiveTab}
-        activeTab={activeTab}
         onRerunAnimation={handleRerunAnimation}
-        onToggleNoColor={handleToggleNoColor}
         codeProcessed={codeProcessed}
       />
 
       <div className="content-container">
         <div className="editor-section">
           <CodeEditor
-            code={buffers[activeTab]}
-            setCode={(newCode) =>
-              setBuffers((prevBuffers) => ({
-                ...prevBuffers,
-                [activeTab]: newCode,
-              }))
-            }
+            code={code}
+            setCode={setCode}
             editorRef={editorRef}
           />
         </div>
@@ -111,8 +83,6 @@ function App() {
               edges={edges}
               order={order}
               editorRef={editorRef}
-              activeTab={activeTab}
-              noColor={noColor}
             />
           </ReactFlowProvider>
         </div>

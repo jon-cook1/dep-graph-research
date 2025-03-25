@@ -1,82 +1,78 @@
+// Base styles shared across all node types
+const baseNodeStyle = {
+  borderRadius: '50%',
+  width: 120,
+  height: 120,
+  textAlign: 'center',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontSize: '14px',
+  fontWeight: '500',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  transition: 'background 0.3s ease, transform 0.2s ease',
+};
+
+// Node styles by type
 export const nodeStyles = {
   custominput: {
-    background: '#D3D3D3', // Default gray background
-    color: '#000000',       // White text color
-    border: '2px solid #000000', // Solid black border
-    borderRadius: '50%',    // Circular shape
-    width: 100,             // Fixed width for all nodes
-    height: 100,            // Fixed height for all nodes
-    textAlign: 'center',    // Center the text inside the node
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...baseNodeStyle,
+    background: '#D3D3D3',
+    color: '#333333',
+    border: '2px solid #333333',
   },
   step: {
-    background: '#D3D3D3', // Default gray background
-    color: '#000000',       // White text color
-    border: 'none',         // No border for step nodes
-    borderRadius: '50%',    // Circular shape
-    width: 100,             // Fixed width for all nodes
-    height: 100,            // Fixed height for all nodes
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...baseNodeStyle,
+    background: '#D3D3D3',
+    color: '#333333',
+    border: 'none',
   },
   target: {
-    background: '#D3D3D3',  // Default gray background
-    color: '#000000',        // White text color
-    border: '2px outset #000000', // Outset black border
-    borderRadius: '50%',    // Circular shape
-    width: 100,             // Fixed width for all nodes
-    height: 100,            // Fixed height for all nodes
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...baseNodeStyle,
+    background: '#D3D3D3',
+    color: '#333333',
+    border: '2px outset #333333',
   },
   customoutput: {
-    background: '#D3D3D3',   // Default gray background
-    color: '#000000',         // White text color
-    border: '2px dashed #000000', // Dashed black border
-    borderRadius: '50%',     // Circular shape
-    width: 100,              // Fixed width for all nodes
-    height: 100,             // Fixed height for all nodes
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    ...baseNodeStyle,
+    background: '#D3D3D3',
+    color: '#333333',
+    border: '2px dashed #333333',
   },
 };
-  
-  // Predefined styles for edges based on their types
-  export const edgeStyles = {
-    passing: {
-      stroke: '#FF9900',
-      strokeWidth: 3,
-      animated: true,
-      color: '#000000',  // Black text color for edges
+
+// Edge styles by type
+export const edgeStyles = {
+  passing: {
+    stroke: '#FF9900',
+    strokeWidth: 3,
+    animated: true,
+    color: '#333333',
+  },
+  internal: {
+    stroke: '#00CCAA',
+    strokeWidth: 2,
+    animated: false,
+    color: '#333333',
+  }
+};
+
+// Function to apply styles to nodes and edges based on type
+export const applyStyles = (nodes, edges) => {
+  const styledNodes = nodes.map((node) => ({
+    ...node,
+    style: {
+      ...nodeStyles[node.mytype] || baseNodeStyle,
     },
-    internal: {
-      stroke: '#00FFCC',
-      strokeWidth: 2,
-      animated: false,
-      color: '#000000',  // Black text color for edges
-    }
-  };
-  
-  // Function to apply styles to nodes and edges based on type
-  export const applyStyles = (nodes, edges) => {
-    const styledNodes = nodes.map((node) => ({
-      ...node,
-      style: nodeStyles[node.mytype] || {},
-    }));
-  
-    const styledEdges = edges.map((edge) => ({
-      ...edge,
-      style: edgeStyles[edge.mytype] || {},
-    }));
-  
-    return { styledNodes, styledEdges };
-  };
+  }));
+
+  const styledEdges = edges.map((edge) => ({
+    ...edge,
+    style: {
+      ...edgeStyles[edge.mytype] || {},
+    },
+  }));
+
+  return { styledNodes, styledEdges };
+};
   
